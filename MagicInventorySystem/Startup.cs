@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MagicInventorySystem.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +24,9 @@ namespace MagicInventorySystem
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddDbContext<MagicInventorySystemContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("MagicInventorySystemContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -31,6 +36,7 @@ namespace MagicInventorySystem
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
+                app.UseStatusCodePages();
             }
             else
             {
