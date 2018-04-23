@@ -9,9 +9,9 @@
 <form method="get">
     <p>
         Product Name: <input name="productName" value="@ViewBag.ProductName" />
-        <input type="submit" value="Filter" />
+        <input type="submit" value="Filter" class="btn btn-default" />
         <a asp-action="Index">
-            <input type ="button" value="Show All" />
+            <input type ="button" value="Show All" class="btn btn-default" />
         </a>
     </p>
 </form>
@@ -28,7 +28,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.StockLevel)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -43,16 +42,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.StockLevel)
             </td>
-            @*<td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>*@
+            <td>
+                @Html.ActionLink("Add Stock Request", "Create_Existing", new { PID = item.ProductID, SID = 1 })
+            </td>
         </tr>
 }
     </tbody>
 </table>
 
 <p>
-    <a asp-action="Create"><input type="button" value="Create New Inventory Item Stock Request" /> </a>
+    <a asp-action="Create"><input type="button" value="Create New Inventory Item Stock Request" class="btn btn-default"/> </a>
 </p>
