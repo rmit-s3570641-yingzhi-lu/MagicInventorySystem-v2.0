@@ -23,6 +23,9 @@
                 @Html.DisplayNameFor(model => model.Product.Name)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Product.Value)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.StockLevel)
             </th>
             <th></th>
@@ -31,17 +34,20 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Product.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StockLevel)
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Value)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StockLevel)
+            </td>
+        </tr>
         }
     </tbody>
 </table>

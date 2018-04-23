@@ -9,6 +9,8 @@ namespace MagicInventorySystem.Models
 
         [Display(Name = "Product Name")]
         public string Name { get; set; }
+
+        [Display(Name = "Product Price")]
         public double Value { get; set; }
     }
 }
