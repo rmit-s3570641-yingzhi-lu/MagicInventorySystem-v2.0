@@ -7,6 +7,7 @@ namespace MagicInventorySystem.Models
     {
         [Display(Name = "Store ID")]
         public int StoreID { get; set; }
+        [Display(Name = "Store Name")]
         public string Name { get; set; }
 
         public ICollection<StoreInventory> StoreInventory { get; } = new List<StoreInventory>();

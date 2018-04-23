@@ -43,7 +43,7 @@
                 @Html.DisplayFor(modelItem => item.StockLevel)
             </td>
             <td>
-                @Html.ActionLink("Add Stock Request", "Create_Existing", new { PID = item.ProductID, SID = 1 })
+                <a asp-action="Create_Existing" asp-route-id="@item.ProductID">Add Stock Request</a> 
             </td>
         </tr>
 }

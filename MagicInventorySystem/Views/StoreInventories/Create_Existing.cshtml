@@ -1,0 +1,45 @@
+﻿@model MagicInventorySystem.Models.StoreInventory
+
+@{
+    ViewData["Title"] = "Create Existing Item Stock Request";
+}
+
+<h2>Create Existing Item Stock Request</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Store.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Store.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StockLevel)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StockLevel)
+        </dd>
+
+        <dt>Quantity To request: </dt>
+        <dd>
+            <input name="quantity" value="@ViewBag.quantity" /> 
+        </dd>
+
+    </dl>
+</div>
+<div>
+    <a asp-action="Create_Existing">
+        <input type="button" class="btn btn-default" value="Create" />
+    </a>
+    <a asp-action="Index">
+        <input type="button" class="btn btn-default" value="Back To List" />
+    </a>
+</div>

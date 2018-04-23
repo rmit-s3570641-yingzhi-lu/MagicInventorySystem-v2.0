@@ -31,12 +31,12 @@ namespace MagicInventorySystem.Controllers
                 ViewBag.ProductName = productName;
             }
 
-            query = query.OrderBy(x => x.Product.Name);
+            query = query.OrderBy(x => x.StockLevel);
             return View(await query.ToListAsync());
         }
 
         // GET: StoreInventories/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Create_Existing(int? id)
         {
             if (id == null)
             {
@@ -44,9 +44,11 @@ namespace MagicInventorySystem.Controllers
             }
 
             var storeInventory = await _context.StoreInventory
-                .Include(s => s.Product)
-                .Include(s => s.Store)
-                .SingleOrDefaultAsync(m => m.StoreID == id);
+                .Include(x => x.Product)
+                .Include(s=>s.Store)
+                .Where(x => x.StoreID == 1)
+                .SingleOrDefaultAsync(m => m.ProductID == id);
+
             if (storeInventory == null)
             {
                 return NotFound();
@@ -55,6 +57,23 @@ namespace MagicInventorySystem.Controllers
             return View(storeInventory);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create_Existing(int quantity, [Bind("ProductID,StockLevel")] StoreInventory storeInventory)
+        {
+            if (quantity > 0 && !string.IsNullOrWhiteSpace(quantity.ToString()))
+            {
+                //_context.Add(storeInventory);
+                //await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                ViewData["ERROR"] = "Input the quantity!";
+            }
+
+            return View();
+
+        }
         // GET: StoreInventories/Create
         public IActionResult Create()
         {
