@@ -1,41 +1,47 @@
 ﻿@model IEnumerable<MagicInventorySystem.Models.OwnerInventory>
 
 @{
-    ViewData["Title"] = "Owner Inventory";
+    ViewBag.Title = "Owner Inventory";
 }
 
 <h2>Owner Inventory</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<form method="get">
+    <p>
+        Product Name: <input name="productName" value="@ViewBag.ProductName" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
 <table class="table">
     <thead>
         <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.StockLevel)
-                </th>
             <th>
-                @Html.DisplayNameFor(model => model.Product)
+                @Html.DisplayNameFor(model => model.ProductID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StockLevel)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.StockLevel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.ProductID)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ProductID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ProductID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ProductID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StockLevel)
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
