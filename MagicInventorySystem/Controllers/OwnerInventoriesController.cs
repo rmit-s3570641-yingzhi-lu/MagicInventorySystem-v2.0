@@ -21,6 +21,7 @@ namespace MagicInventorySystem.Controllers
         // GET: OwnerInventories
         public async Task<IActionResult> Index(string productName)
         {
+
             var query = _context.OwnerInventory.Include(x => x.Product).Select(x => x);
 
             if (!string.IsNullOrWhiteSpace(productName))

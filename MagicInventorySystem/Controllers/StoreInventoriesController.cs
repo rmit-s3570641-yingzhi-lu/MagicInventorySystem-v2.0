@@ -19,10 +19,20 @@ namespace MagicInventorySystem.Controllers
         }
 
         // GET: StoreInventories
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string productName )
         {
-            var magicInventorySystemContext = _context.StoreInventory.Include(s => s.Product).Include(s => s.Store);
-            return View(await magicInventorySystemContext.ToListAsync());
+            var query = _context.StoreInventory.Include(x => x.Product)
+                    .Include(s => s.Store).Select(x => x);
+
+            query = query.Where(x=>x.StoreID == 1);
+            if (!string.IsNullOrWhiteSpace(productName))
+            {
+                query = query.Where(x => x.Product.Name.Contains(productName));
+                ViewBag.ProductName = productName;
+            }
+
+            query = query.OrderBy(x => x.Product.Name);
+            return View(await query.ToListAsync());
         }
 
         // GET: StoreInventories/Details/5

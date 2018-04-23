@@ -10,6 +10,7 @@ namespace MagicInventorySystem.Models
         public int ProductID { get; set; }
         public Product Product { get; set; }
 
+        [Display(Name = "Current Stock")]
         public int StockLevel { get; set; }
     }
 }
