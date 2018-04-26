@@ -8,6 +8,8 @@ namespace MIS.Controllers
     [Authorize(Roles = Constants.OwnerRole)]
     public class OwnerController : Controller
     {
+        //public const string SessionKeyStoreID = "_StoreID";
+
         // GET: Owner
         public ActionResult Index()
         {
@@ -90,3 +92,12 @@ namespace MIS.Controllers
         }
     }
 }
+
+// Set id into session.
+//HttpContext.Session.SetInt32(SessionKeyStoreID, id.Value);
+// Get id from session.
+//var id = HttpContext.Session.GetInt32(SessionKeyStoreID);
+//            if(id == null)
+//            {
+//                return BadRequest();
+//            }

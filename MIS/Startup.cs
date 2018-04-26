@@ -36,6 +36,10 @@ namespace MIS
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            // Adds a default in-memory implementation of IDistributedCache for session
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 3;
@@ -70,6 +74,8 @@ namespace MIS
             }
 
             app.UseStaticFiles();
+            // Add session support
+            app.UseSession();
             app.UseRewriter(new RewriteOptions().AddRedirectToHttps());
             app.UseAuthentication();
 
