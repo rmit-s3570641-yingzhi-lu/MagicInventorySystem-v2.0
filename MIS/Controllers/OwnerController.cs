@@ -1,94 +1,41 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MIS.Data;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MIS.Controllers
 {
     [Authorize(Roles = Constants.OwnerRole)]
     public class OwnerController : Controller
     {
+
         //public const string SessionKeyStoreID = "_StoreID";
+        private readonly ApplicationDbContext _context;
+
+        public OwnerController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         // GET: Owner
-        public ActionResult Index()
+        // GET: OwnerInventories
+        public async Task<IActionResult> Index(string productName)
         {
-            return View();
-        }
 
-        // GET: Owner/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+            var query = _context.OwnerInventory.Include(x => x.Product).Select(x => x);
 
-        // GET: Owner/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Owner/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
+            if (!string.IsNullOrWhiteSpace(productName))
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+                query = query.Where(x => x.Product.Name.Contains(productName));
+                ViewBag.ProductName = productName;
             }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: Owner/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+            query = query.OrderBy(x => x.Product.Name);
 
-        // POST: Owner/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Owner/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Owner/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return View(await query.ToListAsync());
         }
     }
 }
