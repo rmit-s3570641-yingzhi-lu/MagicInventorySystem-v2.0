@@ -18,9 +18,14 @@ namespace MIS.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
+            //composite key
+            builder.Entity<StoreInventory>().HasKey(x => new { x.StoreID, x.ProductID });
         }
+
+        public DbSet<MIS.Models.Product> Product { get; set; }
+        public DbSet<MIS.Models.OwnerInventory> OwnerInventory { get; set; }
+        public DbSet<MIS.Models.Store> Store { get; set; }
+        public DbSet<MIS.Models.StoreInventory> StoreInventory { get; set; }
+        public DbSet<MIS.Models.StockRequest> StockRequest { get; set; }
     }
 }
