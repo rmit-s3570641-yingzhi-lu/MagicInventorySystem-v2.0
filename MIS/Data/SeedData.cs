@@ -12,7 +12,7 @@ namespace MIS.Data
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            var roles = new[] { Constants.RetailRole, Constants.WholeSaleRole };
+            var roles = new[] { Constants.OwnerRole, Constants.FranchiseHolderRole, Constants.CustomerRole };
             foreach (var role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))
@@ -23,9 +23,9 @@ namespace MIS.Data
 
             var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
 
-            await EnsureUserHasRole(userManager, "retail@example.com", Constants.RetailRole);
-            await EnsureUserHasRole(userManager, "wholesale@example.com", Constants.WholeSaleRole);
-            await EnsureUserHasRole(userManager, "s3570641@student.rmit.edu.au", Constants.WholeSaleRole);
+            await EnsureUserHasRole(userManager, "jodielu0508@gmail.com", Constants.OwnerRole);
+            await EnsureUserHasRole(userManager, "s3570641@student.rmit.edu.au", Constants.FranchiseHolderRole);            
+            await EnsureUserHasRole(userManager, "prismtest80 @gmail.com", Constants.CustomerRole);
         }
 
         private static async Task EnsureUserHasRole(

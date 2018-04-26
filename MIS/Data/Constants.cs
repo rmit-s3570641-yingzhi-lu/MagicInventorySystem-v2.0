@@ -7,7 +7,8 @@ namespace MIS.Data
 {
     public class Constants
     {
-        public const string RetailRole = "Retail";
-        public const string WholeSaleRole = "WholeSale";
+        public const string OwnerRole = "Owner";
+        public const string FranchiseHolderRole = "Franchise";
+        public const string CustomerRole = "Customer";
     }
 }
