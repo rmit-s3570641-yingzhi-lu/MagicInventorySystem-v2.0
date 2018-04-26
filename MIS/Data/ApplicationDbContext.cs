@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MIS.Models;
 
@@ -22,10 +18,10 @@ namespace MIS.Data
             builder.Entity<StoreInventory>().HasKey(x => new { x.StoreID, x.ProductID });
         }
 
-        public DbSet<MIS.Models.Product> Product { get; set; }
-        public DbSet<MIS.Models.OwnerInventory> OwnerInventory { get; set; }
-        public DbSet<MIS.Models.Store> Store { get; set; }
-        public DbSet<MIS.Models.StoreInventory> StoreInventory { get; set; }
-        public DbSet<MIS.Models.StockRequest> StockRequest { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Store> Stores { get; set; }
+        public DbSet<OwnerInventory> OwnerInventory { get; set; }
+        public DbSet<StockRequest> StockRequests { get; set; }
+        public DbSet<StoreInventory> StoreInventory { get; set; }
     }
 }
