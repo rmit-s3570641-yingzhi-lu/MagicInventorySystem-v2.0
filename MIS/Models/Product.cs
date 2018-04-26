@@ -5,6 +5,7 @@ namespace MIS.Models
 {
     public class Product
     {
+        [Display(Name = "Product ID")]
         public int ProductID { get; set; }
 
         [Display(Name = "Product Name")]

@@ -7,6 +7,7 @@ namespace MIS.Models
     {
         [Display(Name = "Store ID")]
         public int StoreID { get; set; }
+
         [Display(Name = "Store Name")]
         public string Name { get; set; }
 

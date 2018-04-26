@@ -31,6 +31,9 @@ namespace MIS.Controllers
             //    return BadRequest();
             //}
 
+            // Set id into session.
+            //HttpContext.Session.SetInt32(SessionKeyStoreID, id.Value);
+
             var query = _context.StoreInventory.Include(x => x.Product)
                                     .Include(s => s.Store).Where(x => x.StoreID == 1).Select(x => x);
 
@@ -47,19 +50,23 @@ namespace MIS.Controllers
 
         public async Task<ActionResult> Create_Existing(int? id)
         {
-            var query = _context.StoreInventory.Include(x => x.Product)
-                         .Include(s => s.Store).Where(x => x.StoreID == 1).Where(x => x.ProductID == id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            return View(await query.ToListAsync());
+            var storeInventory = await _context.StoreInventory
+                .Include(x => x.Product)
+                .Include(s => s.Store)
+                .Where(x => x.StoreID == 1)
+                .SingleOrDefaultAsync(m => m.ProductID == id);
+
+            if (storeInventory == null)
+            {
+                return NotFound();
+            }
+
+            return View(storeInventory);
         }
-
-        // Set id into session.
-        //HttpContext.Session.SetInt32(SessionKeyStoreID, id.Value);
-        // Get id from session.
-        //var id = HttpContext.Session.GetInt32(SessionKeyStoreID);
-        //            if(id == null)
-        //            {
-        //                return BadRequest();
-        //            }
     }
 }
