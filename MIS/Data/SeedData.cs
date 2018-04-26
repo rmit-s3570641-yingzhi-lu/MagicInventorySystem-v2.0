@@ -27,7 +27,7 @@ namespace MIS.Data
 
             await EnsureUserHasRole(userManager, "jodielu0508@gmail.com", Constants.OwnerRole);
             await EnsureUserHasRole(userManager, "s3570641@student.rmit.edu.au", Constants.FranchiseHolderRole);
-            await EnsureUserHasRole(userManager, "prismtest80 @gmail.com", Constants.CustomerRole);
+            await EnsureUserHasRole(userManager, "prismtest80@gmail.com", Constants.CustomerRole);
 
             using (var context = new ApplicationDbContext(
                serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))

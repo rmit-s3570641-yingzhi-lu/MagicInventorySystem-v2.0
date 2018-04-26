@@ -1,6 +1,37 @@
-﻿@{
-    ViewBag.Title = "Customer";
-    Layout = "_Layout";
+﻿@model IEnumerable<MIS.Models.Store>
+
+@{
+    ViewBag.Title = "Stores";
 }
 
-<h2>Customer Only!</h2>
+<h2>Stores</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StoreID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StoreID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <a asp-action="List" asp-route-id="@item.StoreID">Go</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
