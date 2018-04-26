@@ -33,7 +33,7 @@ namespace MIS.Data
                serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
                 // Look for any products.
-                if (context.Products.Any())
+                if (context.Product.Any())
                 {
                     return; // DB has been seeded.
                 }
@@ -92,7 +92,7 @@ namespace MIS.Data
                     }
                 };
 
-                context.Products.AddRange(products);
+                context.Product.AddRange(products);
 
                 var i = 0;
                 context.OwnerInventory.AddRange(
@@ -250,7 +250,7 @@ namespace MIS.Data
                     }
                 };
 
-                context.Stores.AddRange(stores);
+                context.Store.AddRange(stores);
 
                 context.SaveChanges();
             }
