@@ -1,7 +1,11 @@
-﻿namespace MIS.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MIS.Models
 {
     public class StockRequest
     {
+        [Display(Name = "Stock Request ID")]
         public int StockRequestID { get; set; }
 
         public int StoreID { get; set; }
