@@ -6,91 +6,60 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MIS.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace MIS.Controllers
 {
     [Authorize(Roles = Constants.FranchiseHolderRole)]
     public class FranchiseController : Controller
     {
+        private readonly ApplicationDbContext _context;
+        public const string SessionKeyStoreID = "_StoreID";
+
+        public FranchiseController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         // GET: Franchise
-        public ActionResult Index()
+        public async Task<ActionResult> Index(string productName)
         {
-            return View();
-        }
+            // Get id from session
+            //var id = HttpContext.Session.GetInt32(SessionKeyStoreID);
+            //if (id == null)
+            //{
+            //    return BadRequest();
+            //}
 
-        // GET: Franchise/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+            var query = _context.StoreInventory.Include(x => x.Product)
+                                    .Include(s => s.Store).Where(x => x.StoreID == 1).Select(x => x);
 
-        // GET: Franchise/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Franchise/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
+            if (!string.IsNullOrWhiteSpace(productName))
             {
-                // TODO: Add insert logic here
+                query = query.Where(x => x.Product.Name.Contains(productName));
+                ViewBag.ProductName = productName;
+            }
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            query = query.OrderBy(x => x.StockLevel);
+
+            return View(await query.ToListAsync());
         }
 
-        // GET: Franchise/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Create_Existing(int? id)
         {
-            return View();
+            var query = _context.StoreInventory.Include(x => x.Product)
+                         .Include(s => s.Store).Where(x => x.StoreID == 1).Where(x => x.ProductID == id);
+
+            return View(await query.ToListAsync());
         }
 
-        // POST: Franchise/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Franchise/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Franchise/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        // Set id into session.
+        //HttpContext.Session.SetInt32(SessionKeyStoreID, id.Value);
+        // Get id from session.
+        //var id = HttpContext.Session.GetInt32(SessionKeyStoreID);
+        //            if(id == null)
+        //            {
+        //                return BadRequest();
+        //            }
     }
 }

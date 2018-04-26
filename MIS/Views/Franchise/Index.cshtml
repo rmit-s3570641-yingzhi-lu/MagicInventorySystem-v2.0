@@ -1,6 +1,56 @@
-﻿@{
-    ViewBag.Title = "Fanchiser Holder";
-    Layout = "_Layout";
+﻿@model IEnumerable<MIS.Models.StoreInventory>
+
+@{
+    ViewBag.Title = "Store Inventory";
 }
 
-<h2>Fanchiser Holder Only!</h2>
+<h2>Store Inventory</h2>
+
+<form method="get">
+    <p>
+        Product Name: <input name="productName" value="@ViewBag.ProductName" />
+        <input type="submit" value="Filter" class="btn btn-default" />
+        <a asp-action="Index">
+            <input type="button" value="Show All" class="btn btn-default" />
+        </a>
+    </p>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StockLevel)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StockLevel)
+                </td>
+                <td>
+                    <a asp-action="Create_Existing" asp-route-id="@item.ProductID">Add Stock Request</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <a asp-action="Create"><input type="button" value="Create New Inventory Item Stock Request" class="btn btn-default" /> </a>
+</p>

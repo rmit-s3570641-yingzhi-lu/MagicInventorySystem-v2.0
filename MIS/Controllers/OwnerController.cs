@@ -12,7 +12,6 @@ namespace MIS.Controllers
     public class OwnerController : Controller
     {
 
-        //public const string SessionKeyStoreID = "_StoreID";
         private readonly ApplicationDbContext _context;
 
         public OwnerController(ApplicationDbContext context)
@@ -39,12 +38,3 @@ namespace MIS.Controllers
         }
     }
 }
-
-// Set id into session.
-//HttpContext.Session.SetInt32(SessionKeyStoreID, id.Value);
-// Get id from session.
-//var id = HttpContext.Session.GetInt32(SessionKeyStoreID);
-//            if(id == null)
-//            {
-//                return BadRequest();
-//            }
