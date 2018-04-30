@@ -14,6 +14,7 @@ namespace MIS.Models
         public int ProductID { get; set; }
         public Product Product { get; set; }
 
+        [Range(1,100,ErrorMessage ="Mush Below 100")]
         public int Quantity { get; set; }
     }
 }
