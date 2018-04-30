@@ -1,4 +1,4 @@
-﻿@model MIS.Features.PaginatedList<OwnerInventory>
+﻿@model PaginatedList<OwnerInventory>
 
 @{
     ViewBag.Title = "Owner Inventory";
@@ -55,7 +55,7 @@
                     @Html.DisplayFor(modelItem => item.StockLevel)
                 </td>
                 <td>
-                    <a>Reset</a>
+                    <a asp-action="UpdateStockLevel" asp-route-id="@item.ProductID">Reset</a>
                 </td>
             </tr>
         }

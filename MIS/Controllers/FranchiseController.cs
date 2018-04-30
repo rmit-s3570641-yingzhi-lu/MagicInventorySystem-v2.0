@@ -14,7 +14,6 @@ namespace MIS.Controllers
     public class FranchiseController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public const string SessionKeyStoreID = "_StoreID";
 
         public FranchiseController(ApplicationDbContext context)
         {
@@ -24,16 +23,6 @@ namespace MIS.Controllers
         // GET: Franchise
         public async Task<ActionResult> Index(string productName)
         {
-            // Get id from session
-            //var id = HttpContext.Session.GetInt32(SessionKeyStoreID);
-            //if (id == null)
-            //{
-            //    return BadRequest();
-            //}
-
-            // Set id into session.
-            //HttpContext.Session.SetInt32(SessionKeyStoreID, id.Value);
-
             var query = _context.StoreInventory.Include(x => x.Product)
                                     .Include(s => s.Store).Where(x => x.StoreID == 1).Select(x => x);
 

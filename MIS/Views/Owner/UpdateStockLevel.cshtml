@@ -1,0 +1,52 @@
+﻿@model MIS.Models.OwnerInventory
+@{
+    ViewData["Title"] = "Reset Stock";
+}
+
+<h2>Reset Stock</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductID)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProductID)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Value)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.Value)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StockLevel)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StockLevel)
+        </dd>
+    </dl>
+</div>
+
+<form asp-action="UpdateStockLevel" asp-route-id="@Model.ProductID" asp-route-currentStock=" @Model.StockLevel">
+    <div class="form-actions no-color">
+        <p>
+            Enter a number to reset current stock: @Html.TextBox("resetNum")
+        </p>
+
+        <p>
+            <input type="submit" class="btn btn-default" value="Reset" />
+            <a asp-action="Index">
+                <input type="button" class="btn btn-default" value="Back To List" />
+            </a>
+        </p>
+    </div>
+</form>
+

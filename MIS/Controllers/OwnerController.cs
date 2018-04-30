@@ -6,6 +6,7 @@ using MIS.Data;
 using MIS.Features;
 using MIS.Models;
 using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -102,6 +103,61 @@ namespace MIS.Controllers
 
             var ownerinventory = _context.OwnerInventory.Select(x => x);
             return View(await query.ToListAsync());
+        }
+
+        //update stock level code
+        public async Task<ActionResult> UpdateStockLevel(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var ownerInventory = await _context.OwnerInventory
+                .Include(x => x.Product)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(m => m.ProductID == id);
+
+            if (ownerInventory == null)
+            {
+                return NotFound();
+            }
+
+            return View(ownerInventory);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateStockLevel(int? resetNum, int? id, int? currentStock)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var ownerInventory = await _context.OwnerInventory
+                .Include(x => x.Product)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(m => m.ProductID == id);
+
+            try
+            {
+                if (resetNum != null && resetNum > currentStock)
+                {
+                    await _context.Database.ExecuteSqlCommandAsync(
+                        "UPDATE OwnerInventory SET StockLevel={0}  WHERE ProductID ={1}",
+                        resetNum,id);
+                        return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists, " +
+                    "see your system administrator.");
+            }
+
+            return View(ownerInventory);
         }
     }
 }

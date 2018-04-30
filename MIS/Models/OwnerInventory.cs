@@ -10,6 +10,7 @@ namespace MIS.Models
         public Product Product { get; set; }
 
         [Display(Name = "Current Stock")]
+        [Range(0,100)]
         public int StockLevel { get; set; }
     }
 }
