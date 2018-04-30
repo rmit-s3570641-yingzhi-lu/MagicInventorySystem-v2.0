@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MIS.Models.OwnerInventory>
+﻿@model MIS.Features.PaginatedList<OwnerInventory>
 
 @{
     ViewBag.Title = "Owner Inventory";
@@ -6,30 +6,34 @@
 
 <h2>Owner Inventory</h2>
 
-<form method="get">
-    <p>
-        Product Name: <input name="productName" value="@ViewBag.ProductName" />
-        <input type="submit" value="Filter" class="btn btn-default" />
-        <a asp-action="Index">
-            <input type="button" value="Show All" class="btn btn-default" />
-        </a>
-    </p>
+<p>
+    <a asp-action="List_Stock_Request"><input type="button" value="Check Stock Request" class="btn btn-default" /> </a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" />
+            <a asp-action="Index"><input type="button" value="Back to Full List" class="btn btn-default" /></a>
+        </p>
+    </div>
 </form>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ProductID)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["IDSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Product ID</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Product.Name)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Product Name</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Product.Value)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Product Price</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StockLevel)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["StockSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Current Stock</a>               
             </th>
             <th></th>
         </tr>
@@ -58,6 +62,22 @@
     </tbody>
 </table>
 
-<p>
-    <a asp-action="List_Stock_Request"><input type="button" value="Check Stock Request" class="btn btn-default" /> </a>
-</p>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+@* The paging buttons are displayed by tag helpers *@
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-page="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-page="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
