@@ -126,38 +126,35 @@ namespace MIS.Controllers
             return View(ownerInventory);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateStockLevel(int? resetNum, int? id, int? currentStock)
+        //POST:Owner/UpdateStockLevl/5
+        [HttpPost, ActionName("UpdateStockLevel")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStockLevelPost(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var ownerInventory = await _context.OwnerInventory
-                .Include(x => x.Product)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.ProductID == id);
-
-            try
+            var productToUpdate = await _context.OwnerInventory.SingleOrDefaultAsync(o => o.ProductID == id);
+            if (await TryUpdateModelAsync<OwnerInventory>(
+                productToUpdate,
+                "",
+                o => o.StockLevel))
             {
-                if (resetNum != null && resetNum > currentStock)
+                try
                 {
-                    await _context.Database.ExecuteSqlCommandAsync(
-                        "UPDATE OwnerInventory SET StockLevel={0}  WHERE ProductID ={1}",
-                        resetNum,id);
-                        return RedirectToAction(nameof(Index));
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException /* ex */)
+                {
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
                 }
             }
-            catch (DbUpdateException)
-            {
-                //Log the error (uncomment ex variable name and write a log.)
-                ModelState.AddModelError("", "Unable to save changes. " +
-                    "Try again, and if the problem persists, " +
-                    "see your system administrator.");
-            }
-
-            return View(ownerInventory);
+            return View(productToUpdate);
         }
     }
 }
