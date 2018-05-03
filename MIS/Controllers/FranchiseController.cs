@@ -7,24 +7,32 @@ using Microsoft.AspNetCore.Mvc;
 using MIS.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using MIS.Models;
 
 namespace MIS.Controllers
 {
     [Authorize(Roles = Constants.FranchiseHolderRole)]
     public class FranchiseController : Controller
     {
+        private readonly UserManager<ApplicationUser>  _userManager;
         private readonly ApplicationDbContext _context;
 
-        public FranchiseController(ApplicationDbContext context)
+        public FranchiseController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
+            _userManager = userManager;
             _context = context;
         }
 
         // GET: Franchise
         public async Task<ActionResult> Index(string productName)
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            //user.Store.StoreInventory
+
             var query = _context.StoreInventory.Include(x => x.Product)
-                                    .Include(s => s.Store).Where(x => x.StoreID == 1).Select(x => x);
+                                    .Include(s => s.Store).Where(x => x.StoreID == user.StoreID).Select(x => x);
 
             if (!string.IsNullOrWhiteSpace(productName))
             {

@@ -29,6 +29,15 @@ namespace MIS.Data
             await EnsureUserHasRole(userManager, "s3570641@student.rmit.edu.au", Constants.FranchiseHolderRole);
             await EnsureUserHasRole(userManager, "prismtest80@gmail.com", Constants.CustomerRole);
 
+            //storeID insertion
+            var user = await userManager.FindByNameAsync("s3570641@student.rmit.edu.au");
+            if (user != null )
+            {
+                user.StoreID = 1;
+                await userManager.UpdateAsync(user);
+            }
+
+
             using (var context = new ApplicationDbContext(
                serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {

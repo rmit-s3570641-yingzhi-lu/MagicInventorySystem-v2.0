@@ -94,7 +94,7 @@ namespace MIS.Controllers
         public async Task<IActionResult> List_Stock_Request(string productName)
         {
             var query = _context.StockRequest.Include(x => x.Product).Include(x => x.Store).Select(x => x);
-
+            
             if (!string.IsNullOrWhiteSpace(productName))
             {
                 query = query.Where(x => x.Product.Name.Contains(productName));
