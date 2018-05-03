@@ -52,10 +52,13 @@ namespace MIS.Controllers
                 return NotFound();
             }
 
+            var user = await _userManager.GetUserAsync(User);
+
             var storeInventory = await _context.StoreInventory
                 .Include(x => x.Product)
                 .Include(s => s.Store)
-                .Where(x => x.StoreID == 1)
+                .Where(x => x.StoreID == user.StoreID)
+                .AsNoTracking()
                 .SingleOrDefaultAsync(m => m.ProductID == id);
 
             if (storeInventory == null)
@@ -65,5 +68,45 @@ namespace MIS.Controllers
 
             return View(storeInventory);
         }
+
+        //POST:Owner/UpdateStockLevl/5
+        [HttpPost, ActionName("Create_Existing")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create_ExistingPost(int quantity,int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var user = await _userManager.GetUserAsync(User);
+            var productToUpdate = await _context.StoreInventory.SingleOrDefaultAsync(s=>s.ProductID == id);
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var stockRequest = new StockRequest()
+                    {
+                        ProductID = productToUpdate.ProductID,
+                        Quantity = quantity,
+                        StoreID = (int)user.StoreID
+                    };
+
+                    _context.Add(stockRequest);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
+            }
+
+            return View(productToUpdate);
+        }
+
     }
 }
