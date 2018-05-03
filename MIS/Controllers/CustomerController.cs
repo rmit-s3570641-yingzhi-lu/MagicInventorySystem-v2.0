@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using MIS.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using MIS.Features;
+using MIS.Models;
 
 namespace MIS.Controllers
 {
@@ -14,7 +16,6 @@ namespace MIS.Controllers
     public class CustomerController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public const string SessionKeyStoreID = "_StoreID";
 
         public CustomerController(ApplicationDbContext context)
         {
@@ -29,30 +30,68 @@ namespace MIS.Controllers
             return View(await stores.ToListAsync());
         }
 
-        public IActionResult List(int? id, string productName)
+        public async Task<IActionResult> List(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? page, int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["IDSortParm"] = String.IsNullOrEmpty(sortOrder) ? "ID_desc" : "";
+            ViewData["NameSortParm"] = sortOrder == "Name" ? "name_desc" : "Name";
+            ViewData["StockSortParm"] = sortOrder == "Stock" ? "stock_desc" : "Stock";
+
+            //pagination and search
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
             var storeinventory = _context.StoreInventory.Include(x => x.Product).Where(x => x.StoreID == id).Distinct();
 
-            if (!string.IsNullOrWhiteSpace(productName))
+            if (!string.IsNullOrWhiteSpace(searchString))
             {
-                storeinventory = storeinventory.Where(x => x.Product.Name.Contains(productName));
-                ViewBag.ProductName = productName;
+                storeinventory = storeinventory.Where(x => x.Product.Name.Contains(searchString));
             }
 
-            storeinventory = storeinventory.OrderBy(x => x.ProductID);
-
-            if (storeinventory == null)
+            //switch for ordering
+            switch (sortOrder)
             {
-                return NotFound();
+                case "ID_desc":
+                    storeinventory = storeinventory.OrderByDescending(o => o.ProductID);
+                    break;
+                case "Name":
+                    storeinventory = storeinventory.OrderBy(o => o.Product.Name);
+                    break;
+                case "name_desc":
+                    storeinventory = storeinventory.OrderByDescending(o => o.Product.Name);
+                    break;
+                case "Stock":
+                    storeinventory = storeinventory.OrderBy(o => o.StockLevel);
+                    break;
+                case "stock_desc":
+                    storeinventory = storeinventory.OrderByDescending(o => o.StockLevel);
+                    break;
+                default:
+                    storeinventory = storeinventory.OrderBy(o => o.ProductID);
+                    break;
             }
 
-            return View(storeinventory);
-
+            //pagination code
+            int pageSize = 5;
+            return View(await PaginatedList<StoreInventory>
+                .CreateAsync(storeinventory.AsNoTracking(), page ?? 1, pageSize));
         }
     }
 }
