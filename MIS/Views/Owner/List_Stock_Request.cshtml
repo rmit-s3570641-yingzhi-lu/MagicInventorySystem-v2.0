@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MIS.Models.StockRequest>
+﻿@model MIS.Models.ViewModels.StoreInventoryViewModel
 
 @{
     ViewBag.Title = "Stock Request";
@@ -20,22 +20,24 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.StockRequestID)
+                Stock Request ID
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Store.Name)
+                Store Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Product.Name)
+                Product Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Quantity)
+                Quantity
             </th>
-            <th></th>
+            <th>
+                Current Stock
+            </th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model)
+    <tbody class="srt">
+        @foreach (var item in Model.StockRequests)
         {
             <tr>
                 <td>
@@ -50,8 +52,19 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Quantity)
                 </td>
+                    @{
+                        foreach (var product in Model.OwnerInventories)
+                        {
+                            if (product.ProductID.Equals(item.ProductID))
+                            {
+                                <td>
+                                    @product.StockLevel.ToString()
+                                </td>
+                            }
+                        }
+                    }
                 <td>
-                    <a>Approve</a> 
+                    <a asp-action="ApproveRequest" asp-route-id="@item.StockRequestID">Approve </a>
                 </td>
             </tr>
         }
@@ -61,3 +74,11 @@
 <p>
     <a asp-action="Index"><input type="button" value="BACK" class="btn btn-default" /> </a>
 </p>
+
+@*<script>
+    var quantity = $(".srt:nth-child(3)");
+    var currentStock = $(".srt:nth-child(4)");
+    if (currentStock >= quantity) {
+        $(".srt").append("<a  asp-action='ApproveRequest'>Approve </a>");
+    }   
+</script>*@

@@ -6,9 +6,11 @@ using MIS.Data;
 using MIS.Features;
 using MIS.Models;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using MIS.Models.ViewModels;
 
 namespace MIS.Controllers
 {
@@ -102,7 +104,12 @@ namespace MIS.Controllers
             }
 
             var ownerinventory = _context.OwnerInventory.Select(x => x);
-            return View(await query.ToListAsync());
+            StoreInventoryViewModel svm = new StoreInventoryViewModel
+            {
+                OwnerInventories = new List<OwnerInventory>(ownerinventory),
+                StockRequests = new List<StockRequest>(query)
+            };
+            return View(svm);
         }
 
         //update stock level code
@@ -155,6 +162,104 @@ namespace MIS.Controllers
                 }
             }
             return View(productToUpdate);
+        }
+
+        //approve store request
+        public async Task<ActionResult> ApproveRequest(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var query = await _context.StockRequest
+                .Include(x => x.Product)
+                .Include(x => x.Store)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x => x.StockRequestID == id);
+
+
+            var ownerinventory = _context.OwnerInventory.Select(x => x);
+
+            StoreInventoryViewModel svm = new StoreInventoryViewModel
+            {
+                StockRequests = new List<StockRequest> {query},
+                OwnerInventories = new List<OwnerInventory>(ownerinventory)
+            };
+
+            return View(svm);
+        }
+
+        //POST:Owner/ApproveRequest/5
+        [HttpPost, ActionName("ApproveRequest")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ApproveRequestPost(int? rid)
+        {
+            if (rid == null)
+            {
+                return NotFound();
+            }
+
+            var stockrequest = await _context.StockRequest.FirstOrDefaultAsync(s => s.StockRequestID == rid);
+            var pid = stockrequest.ProductID;
+            var sid = stockrequest.StoreID;
+            var quantity = stockrequest.Quantity;
+
+            await UpdateOwnerInventory(pid, quantity);
+            await UpdateStoreInventory(sid, quantity);
+            await DeleteStoreRequest(sid);
+
+            //else return the ViewModel
+            var query = _context.StockRequest.Include(x => x.Product).Include(x => x.Store).Select(x => x);
+            var ownerinventory = _context.OwnerInventory.Select(x => x);
+            StoreInventoryViewModel svm = new StoreInventoryViewModel
+            {
+                OwnerInventories = new List<OwnerInventory>(ownerinventory),
+                StockRequests = new List<StockRequest>(query)
+            };
+            return View(svm);
+        }
+
+        public async Task UpdateStoreInventory(int sid,int quantity)
+        {
+            var storeInventoryToUpdate = await _context.StoreInventory.SingleOrDefaultAsync(o => o.ProductID == sid);
+            if (await TryUpdateModelAsync<StoreInventory>(
+                storeInventoryToUpdate, "", o => (o.StockLevel + quantity)))
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException /* ex */)
+                {
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save Store Inventory changes.");
+                }
+            }
+        }
+
+        public async Task UpdateOwnerInventory(int pid, int quantity)
+        {
+            var ownerInventoryToUpdate = await _context.OwnerInventory.SingleOrDefaultAsync(o => o.ProductID == pid);
+            if (await TryUpdateModelAsync<OwnerInventory>(
+                ownerInventoryToUpdate, "", o => (o.StockLevel - quantity)))
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException /* ex */)
+                {
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save Owner Inventory changes.");
+                }
+            }
+        }
+
+        private async Task DeleteStoreRequest(int rid)
+        {
+            var stockRequestToDelete = await _context.StockRequest.SingleOrDefaultAsync(o => o.StockRequestID == rid);
+
         }
     }
 }
