@@ -33,7 +33,7 @@ namespace MIS.Data
             var user = await userManager.FindByNameAsync("s3570641@student.rmit.edu.au");
             if (user != null )
             {
-                user.StoreID = 1;
+                user.StoreID = 2;
                 await userManager.UpdateAsync(user);
             }
 

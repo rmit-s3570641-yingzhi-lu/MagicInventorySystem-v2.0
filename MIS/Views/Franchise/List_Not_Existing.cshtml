@@ -1,0 +1,70 @@
+﻿@model List<MIS.Models.OwnerInventory>
+
+@{
+    ViewBag.Title = "Create New Item Request";
+    Layout = "_Layout";
+}
+
+<h2>Currently Not Existing Items In Your Inventory</h2>
+
+<form method="get">
+    <p>
+        Product Name: <input name="productName" value="@ViewBag.ProductName" />
+        <input type="submit" value="Filter" class="btn btn-default" />
+        <a asp-action="List_Not_Existing">
+            <input type="button" value="Show All" class="btn btn-default" />
+        </a>
+    </p>
+</form>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            Product ID
+        </th>
+        <th>
+            Product Name
+        </th>
+        <th>
+            Product Price
+        </th>
+        <th>
+            Owner Current Stock
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Value)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StockLevel)
+            </td>
+            <td>
+                <a asp-action="Create_Not_Existing" asp-route-id="@item.ProductID">Request For This New Item</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@{
+    if (Model.Count == 0)
+    {
+        <h3>No Result</h3>
+    }
+}
+
+<a asp-action="Index">
+    <input type="button" class="btn btn-default" value="Back To List" />
+</a>

@@ -220,7 +220,14 @@ namespace MIS.Controllers
             {
                 if (storeInventoryToUpdate == null)
                 {
-                    RedirectToAction(nameof(List_Stock_Request));
+                    var storeinventory = new StoreInventory()
+                    {
+                        StoreID = sid,
+                        ProductID = pid,
+                        StockLevel = 1,
+                    };
+
+                    _context.Add(storeinventory);
                 }
                 else
                 {

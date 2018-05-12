@@ -26,6 +26,9 @@
                 @Html.DisplayNameFor(model => model.Product.Name)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Product.Value)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.StockLevel)
             </th>
         </tr>
@@ -41,6 +44,9 @@
                     @Html.DisplayFor(modelItem => item.Product.Name)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.Product.Value)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.StockLevel)
                 </td>
                 <td>
@@ -52,5 +58,5 @@
 </table>
 
 <p>
-    <a asp-action="Create"><input type="button" value="Create New Inventory Item Stock Request" class="btn btn-default" /> </a>
+    <a asp-action="List_Not_Existing"><input type="button" value="Create New Inventory Item Stock Request" class="btn btn-default" /> </a>
 </p>
