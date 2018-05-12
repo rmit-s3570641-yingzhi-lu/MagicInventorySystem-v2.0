@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MIS.Data;
-using MIS.Features;
+using MIS.Controllers.Features;
 using MIS.Models;
 using System;
 using System.Collections.Generic;

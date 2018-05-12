@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MIS.Models;
 
-namespace MIS.Features
+namespace MIS.Controllers.Features
 {
     public class PaginatedList<T> : List<T>
     {

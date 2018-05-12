@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using MIS.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using MIS.Features;
+using MIS.Controllers.Features;
 using MIS.Models;
 
 namespace MIS.Controllers
