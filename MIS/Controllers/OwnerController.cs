@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MIS.Data;
@@ -7,7 +6,6 @@ using MIS.Features;
 using MIS.Models;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using MIS.Models.ViewModels;
@@ -93,7 +91,7 @@ namespace MIS.Controllers
                 .CreateAsync(ownerInventory.AsNoTracking(), page ?? 1, pageSize));
         }
 
-        public async Task<IActionResult> List_Stock_Request(string productName)
+        public IActionResult List_Stock_Request(string productName)
         {
             var query = _context.StockRequest.Include(x => x.Product).Include(x => x.Store).Select(x => x);
 
