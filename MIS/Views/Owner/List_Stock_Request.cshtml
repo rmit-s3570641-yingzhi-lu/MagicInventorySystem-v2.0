@@ -36,49 +36,53 @@
             </th>
         </tr>
     </thead>
-    <tbody class="srt">
-        @foreach (var item in Model.StockRequests)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StockRequestID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Store.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Product.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
-                </td>
-                    @{
-                        foreach (var product in Model.OwnerInventories)
-                        {
-                            if (product.ProductID.Equals(item.ProductID))
-                            {
-                                <td>
-                                    @product.StockLevel.ToString()
-                                </td>
-                            }
-                        }
+    <tbody>
+    @{
+        var currentStock = 0;
+    }
+    @foreach (var item in Model.StockRequests)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.StockRequestID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Store.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            @{
+                foreach (var product in Model.OwnerInventories)
+                {
+                    if (product.ProductID.Equals(item.ProductID))
+                    {
+                        currentStock = product.StockLevel;
+                        <td>
+                            @currentStock
+                        </td>
                     }
-                <td>
-                    <a asp-action="ApproveRequest" asp-route-id="@item.StockRequestID">Approve </a>
-                </td>
-            </tr>
-        }
+                }
+
+                if (currentStock > item.Quantity)
+                {
+                    <td>
+                        <a asp-action="ApproveRequest" asp-route-id="@item.StockRequestID">Approve </a>
+                    </td>
+                }
+                else
+                {
+                    <td>Not Enough Stock</td>
+                }
+            }
+        </tr>
+    }
     </tbody>
 </table>
 
 <p>
     <a asp-action="Index"><input type="button" value="BACK" class="btn btn-default" /> </a>
 </p>
-
-@*<script>
-    var quantity = $(".srt:nth-child(3)");
-    var currentStock = $(".srt:nth-child(4)");
-    if (currentStock >= quantity) {
-        $(".srt").append("<a  asp-action='ApproveRequest'>Approve </a>");
-    }   
-</script>*@

@@ -51,7 +51,7 @@ namespace MIS.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var ownerInventory = _context.OwnerInventory.Include(x => x.Product).Select(x => x);                                          
+            var ownerInventory = _context.OwnerInventory.Include(x => x.Product).Select(x => x);
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -68,10 +68,10 @@ namespace MIS.Controllers
                     ownerInventory = ownerInventory.OrderBy(o => o.Product.Name);
                     break;
                 case "name_desc":
-                    ownerInventory = ownerInventory.OrderByDescending(o=>o.Product.Name);
+                    ownerInventory = ownerInventory.OrderByDescending(o => o.Product.Name);
                     break;
                 case "Price":
-                    ownerInventory = ownerInventory.OrderBy(o=>o.Product.Value);
+                    ownerInventory = ownerInventory.OrderBy(o => o.Product.Value);
                     break;
                 case "price_desc":
                     ownerInventory = ownerInventory.OrderByDescending(o => o.Product.Value);
@@ -83,7 +83,7 @@ namespace MIS.Controllers
                     ownerInventory = ownerInventory.OrderByDescending(o => o.StockLevel);
                     break;
                 default:
-                    ownerInventory = ownerInventory.OrderBy(o=>o.ProductID);
+                    ownerInventory = ownerInventory.OrderBy(o => o.ProductID);
                     break;
             }
 
@@ -96,7 +96,7 @@ namespace MIS.Controllers
         public async Task<IActionResult> List_Stock_Request(string productName)
         {
             var query = _context.StockRequest.Include(x => x.Product).Include(x => x.Store).Select(x => x);
-            
+
             if (!string.IsNullOrWhiteSpace(productName))
             {
                 query = query.Where(x => x.Product.Name.Contains(productName));
@@ -178,12 +178,11 @@ namespace MIS.Controllers
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.StockRequestID == id);
 
-
             var ownerinventory = _context.OwnerInventory.Select(x => x);
 
             StoreInventoryViewModel svm = new StoreInventoryViewModel
             {
-                StockRequests = new List<StockRequest> {query},
+                StockRequests = new List<StockRequest> { query },
                 OwnerInventories = new List<OwnerInventory>(ownerinventory)
             };
 
@@ -193,73 +192,94 @@ namespace MIS.Controllers
         //POST:Owner/ApproveRequest/5
         [HttpPost, ActionName("ApproveRequest")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ApproveRequestPost(int? rid)
+        public async Task<IActionResult> ApproveRequestPost(int? id)
         {
-            if (rid == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var stockrequest = await _context.StockRequest.FirstOrDefaultAsync(s => s.StockRequestID == rid);
+            var stockrequest = await _context.StockRequest.AsNoTracking().FirstOrDefaultAsync(s => s.StockRequestID == id);
             var pid = stockrequest.ProductID;
             var sid = stockrequest.StoreID;
             var quantity = stockrequest.Quantity;
 
             await UpdateOwnerInventory(pid, quantity);
-            await UpdateStoreInventory(sid, quantity);
-            await DeleteStoreRequest(sid);
+            await UpdateStoreInventory(sid, pid, quantity);
+            await DeleteStockRequest(id);
 
-            //else return the ViewModel
-            var query = _context.StockRequest.Include(x => x.Product).Include(x => x.Store).Select(x => x);
-            var ownerinventory = _context.OwnerInventory.Select(x => x);
-            StoreInventoryViewModel svm = new StoreInventoryViewModel
-            {
-                OwnerInventories = new List<OwnerInventory>(ownerinventory),
-                StockRequests = new List<StockRequest>(query)
-            };
-            return View(svm);
+            return RedirectToAction(nameof(List_Stock_Request));
         }
 
-        public async Task UpdateStoreInventory(int sid,int quantity)
+        public async Task UpdateStoreInventory(int sid, int pid, int quantity)
         {
-            var storeInventoryToUpdate = await _context.StoreInventory.SingleOrDefaultAsync(o => o.ProductID == sid);
-            if (await TryUpdateModelAsync<StoreInventory>(
-                storeInventoryToUpdate, "", o => (o.StockLevel + quantity)))
+            var storeInventoryToUpdate = await _context.StoreInventory.Where(s => s.ProductID == pid)
+                .Where(s => s.StoreID == sid).SingleOrDefaultAsync();
+
+            try
             {
-                try
+                if (storeInventoryToUpdate == null)
                 {
+                    RedirectToAction(nameof(List_Stock_Request));
+                }
+                else
+                {
+                    storeInventoryToUpdate.StockLevel += quantity;
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateException /* ex */)
-                {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save Store Inventory changes.");
-                }
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                ModelState.AddModelError("", "Unable to save Store Inventory changes.");
             }
         }
 
         public async Task UpdateOwnerInventory(int pid, int quantity)
         {
             var ownerInventoryToUpdate = await _context.OwnerInventory.SingleOrDefaultAsync(o => o.ProductID == pid);
-            if (await TryUpdateModelAsync<OwnerInventory>(
-                ownerInventoryToUpdate, "", o => (o.StockLevel - quantity)))
+
+            try
             {
-                try
+                if (ownerInventoryToUpdate == null)
                 {
+                    RedirectToAction(nameof(List_Stock_Request));
+                }
+                else
+                {
+                    ownerInventoryToUpdate.StockLevel -= quantity;
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateException /* ex */)
-                {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save Owner Inventory changes.");
-                }
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                ModelState.AddModelError("", "Unable to save Owner Inventory changes.");
             }
         }
 
-        private async Task DeleteStoreRequest(int rid)
+        public async Task DeleteStockRequest(int? stockid)
         {
-            var stockRequestToDelete = await _context.StockRequest.SingleOrDefaultAsync(o => o.StockRequestID == rid);
 
+            // delete the current store request
+            var stockRequestToDelete = await _context.StockRequest.SingleOrDefaultAsync(o => o.StockRequestID == stockid);
+
+            try
+            {
+                if (stockRequestToDelete == null)
+                {
+                    RedirectToAction(nameof(List_Stock_Request));
+                }
+                else
+                {
+                    _context.StockRequest.Remove(stockRequestToDelete);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                ModelState.AddModelError("", "Unable to save Owner Inventory changes.");
+            }
         }
+
     }
 }

@@ -5,4 +5,65 @@
     Layout = "_Layout";
 }
 
-<h2>ApproveRequest</h2>
+<h3>Are you sure to approve this request?</h3>
+
+<form class="form-horizontal" asp-action="ApproveRequest">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Stock Request ID</label>
+        <div class="col-sm-10">
+            <p class="form-control-static">@Model.StockRequests.First().StockRequestID</p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Store Name</label>
+        <div class="col-sm-10">
+            <p class="form-control-static">@Model.StockRequests.First().Store.Name</p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Product Name</label>
+        <div class="col-sm-10">
+            <p class="form-control-static">@Model.StockRequests.First().Product.Name</p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Quantity</label>
+        <div class="col-sm-10">
+            <p class="form-control-static">@Model.StockRequests.First().Quantity</p>
+        </div>
+    </div>
+    
+    @{
+        foreach (var product in Model.OwnerInventories)
+        {
+            if (product.ProductID.Equals(Model.StockRequests.First().ProductID))
+            {
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Current Stock</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static">@product.StockLevel.ToString()</p>
+                    </div>
+                </div>
+            }
+        }
+    }
+
+    <div class="form-group">
+        <div class="col-sm-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+            <a asp-action="List_Stock_Request">
+                <input type="button" class="btn btn-default" value="Back To List" />
+            </a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
