@@ -33,11 +33,3 @@
         display: none;
     }
 }
-
-td, th {
-    text-align: center;
-}
-
-.btn-default {
-    margin:6px;
-}
