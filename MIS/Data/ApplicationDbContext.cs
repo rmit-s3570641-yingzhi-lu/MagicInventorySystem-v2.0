@@ -23,5 +23,6 @@ namespace MIS.Data
         public DbSet<OwnerInventory> OwnerInventory { get; set; }
         public DbSet<StockRequest> StockRequest { get; set; }
         public DbSet<StoreInventory> StoreInventory { get; set; }
+        public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
     }
 }

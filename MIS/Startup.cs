@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MIS.Data;
@@ -39,6 +40,10 @@ namespace MIS
             // Adds a default in-memory implementation of IDistributedCache for session
             services.AddDistributedMemoryCache();
             services.AddSession();
+            
+            // add session about shopping cart
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped(ShoppingCart.GetCart);
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
@@ -57,6 +62,8 @@ namespace MIS
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
+            services.AddMemoryCache();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
