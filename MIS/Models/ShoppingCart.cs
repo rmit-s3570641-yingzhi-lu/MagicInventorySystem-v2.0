@@ -62,8 +62,8 @@ namespace MIS.Models
             _appDbContext.SaveChanges();
         }
 
-        //Remove from cart
-        public int RemoveFromCart(StoreInventory storeInventory)
+        //Minus item from cart
+        public int MinusFromCart(StoreInventory storeInventory)
         {
             var shoppingCartItem = _appDbContext.ShoppingCartItems
                 .Where(s => s.StoreInventory.ProductID == storeInventory.ProductID)
@@ -84,6 +84,22 @@ namespace MIS.Models
 
             _appDbContext.SaveChanges();
             return localAmount;
+        }
+
+        //Remove item from cart
+        public void RemoveFromCart(StoreInventory storeInventory)
+        {
+            var shoppingCartItem = _appDbContext.ShoppingCartItems
+                .Where(s => s.StoreInventory.ProductID == storeInventory.ProductID)
+                .Where(s => s.StoreInventory.StoreID == storeInventory.StoreID)
+                .Where(s => s.ShoppingCartId == ShoppingCartId).SingleOrDefaultAsync();
+
+            if (shoppingCartItem != null)
+            {
+                _appDbContext.ShoppingCartItems.Remove(shoppingCartItem.Result);
+            }
+
+            _appDbContext.SaveChanges();
         }
 
         //Retrun all items in shopping cart

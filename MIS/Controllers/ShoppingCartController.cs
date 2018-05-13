@@ -50,6 +50,19 @@ namespace MIS.Controllers
             return RedirectToAction("Index");
         }
 
+        public RedirectToActionResult MinusFromShoppingCart(int storeId, int productId)
+        {
+            var selectedProduct = _context.StoreInventory
+                .Where(s => s.ProductID == productId).FirstOrDefault(s => s.StoreID == storeId);
+
+            if (selectedProduct != null)
+            {
+                _shoppingCart.MinusFromCart(selectedProduct);
+            }
+
+            return RedirectToAction("Index");
+        }
+
         public RedirectToActionResult RemoveFromShoppingCart(int storeId, int productId)
         {
             var selectedProduct = _context.StoreInventory
@@ -62,6 +75,5 @@ namespace MIS.Controllers
 
             return RedirectToAction("Index");
         }
-
     }
 }
