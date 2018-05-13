@@ -37,14 +37,14 @@ namespace MIS.Controllers
             return View(sCvm);
         }
 
-        public RedirectToActionResult AddToShoppingCart(int storeId, int productId)
+        public RedirectToActionResult AddToShoppingCart(int storeId, int productId, int quantity)
         {
             var selectedProduct = _context.StoreInventory
                 .Where(s => s.ProductID == productId).FirstOrDefault(s => s.StoreID == storeId);
 
             if (selectedProduct != null)
             {
-                _shoppingCart.AddToCart(selectedProduct,1);
+                _shoppingCart.AddToCart(selectedProduct,quantity);
             }
 
             return RedirectToAction("Index");

@@ -49,7 +49,7 @@ namespace MIS.Models
                 {
                     ShoppingCartId = ShoppingCartId,
                     StoreInventory = storeInventory,
-                    Amount = 1
+                    Amount = amount
                 };
 
                 _appDbContext.ShoppingCartItems.Add(newShoppingCartItem);
