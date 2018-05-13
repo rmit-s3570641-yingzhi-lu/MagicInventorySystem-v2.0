@@ -12,7 +12,7 @@ using MIS.Models;
 
 namespace MIS.Controllers
 {
-    //[Authorize(Roles = Constants.CustomerRole)]
+    [Authorize(Roles = Constants.CustomerRole)]
     public class CustomerController : Controller
     {
         private readonly ApplicationDbContext _context;

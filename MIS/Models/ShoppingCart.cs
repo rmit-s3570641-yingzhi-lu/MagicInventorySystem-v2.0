@@ -45,7 +45,7 @@ namespace MIS.Models
 
             if (shoppingCartItem == null)
             {
-                ShoppingCartItem newShoppingCartItem = new ShoppingCartItem
+                var newShoppingCartItem = new ShoppingCartItem
                 {
                     ShoppingCartId = ShoppingCartId,
                     StoreInventory = storeInventory,
@@ -91,7 +91,10 @@ namespace MIS.Models
         {
             return ShoppingCartItems ??
                    (ShoppingCartItems = _appDbContext.ShoppingCartItems.Where(c => c.ShoppingCartId == ShoppingCartId)
-                       .Include(s => s.StoreInventory).ToList());
+                       .Include(s => s.StoreInventory)
+                       .Include(s=>s.StoreInventory.Store)
+                       .Include(s => s.StoreInventory.Product)
+                       .ToList());
         }
 
         //clear the cart
