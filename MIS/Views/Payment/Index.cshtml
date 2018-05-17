@@ -1,0 +1,65 @@
+﻿
+@model CreditCardForm
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Checkout</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <style type="text/css">
+        table th {
+            font-weight: bold;
+            font-size: 150%;
+        }
+
+        table td {
+            padding-right: 50px;
+        }
+    </style>
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreditCardType, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @foreach (MIS.Utilities.CardType cardType in Enum.GetValues(typeof(MIS.Utilities.CardType)))
+                {
+                    if (cardType == MIS.Utilities.CardType.Unknown)
+                    {
+                        continue;
+                    }
+
+                    if (cardType == Model.CreditCardType)
+                    {
+                        @Html.RadioButtonFor(model => model.CreditCardType, (int)cardType, new { id = String.Empty, @checked = "checked" })
+                    }
+                    else
+                    {
+                        @Html.RadioButtonFor(model => model.CreditCardType, (int)cardType, new { id = String.Empty })
+                    }
+                    <span style="margin-left: 5px;">@cardType</span>
+                    <br />
+                }
+                @Html.ValidationMessageFor(model => model.CreditCardType, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreditCardNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CreditCardNumber, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CreditCardNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Pay" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
