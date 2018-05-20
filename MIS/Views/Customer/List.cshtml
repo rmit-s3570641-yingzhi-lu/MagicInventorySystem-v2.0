@@ -48,11 +48,8 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.StockLevel)
                 </td>
-                <td>                   
-                    <form asp-controller="ShoppingCart" asp-action="AddToShoppingCart" asp-route-storeId="@item.StoreID" asp-route-productId="@item.ProductID">
-                        <input type="number" name="quantity" value="1" min="1" max="@item.StockLevel" style="width: 15%" required />&nbsp;&nbsp;
-                        <input type="submit" value="Add To Cart" />
-                    </form>
+                <td>
+                    <a  asp-controller="ShoppingCart" asp-action="AddToShoppingCart" asp-route-storeId="@item.StoreID" asp-route-productId="@item.ProductID">Add to Cart</a>
                 </td>
             </tr>
         }
