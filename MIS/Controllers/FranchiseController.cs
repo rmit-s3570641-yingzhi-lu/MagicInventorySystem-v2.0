@@ -81,7 +81,8 @@ namespace MIS.Controllers
                 return NotFound();
             }
             var user = await _userManager.GetUserAsync(User);
-            var productToUpdate = await _context.StoreInventory.SingleOrDefaultAsync(s => s.ProductID == id);
+            var productToUpdate = await _context.StoreInventory.Where(s => s.StoreID == user.StoreID)
+                .Where(s => s.ProductID == id).SingleOrDefaultAsync();
 
             try
             {
