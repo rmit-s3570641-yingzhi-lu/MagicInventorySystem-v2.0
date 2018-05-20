@@ -27,7 +27,7 @@ namespace MIS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(CreditCardForm creditCardForm)
+        public async Task<ActionResult> Index(CreditCardForm creditCardForm)
         {
             // Validate card type.
             CardType expectedCardType = CardTypeInfo.GetCardType(creditCardForm.CreditCardNumber);
@@ -42,7 +42,7 @@ namespace MIS.Controllers
             }
 
             //clear shopping cart after pay
-            _shoppingCart.ClearCart();
+            await _shoppingCart.ClearCartAsync();
 
             return View("PaymentReceived");
         }

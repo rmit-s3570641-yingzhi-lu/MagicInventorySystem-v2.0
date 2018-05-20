@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -114,11 +115,11 @@ namespace MIS.Models
         }
 
         //clear the cart
-        public void ClearCart()
+        public async Task ClearCartAsync()
         {
             var cartItems = _appDbContext.ShoppingCartItems.Where(cart => cart.ShoppingCartId == ShoppingCartId);
-            _appDbContext.ShoppingCartItems.RemoveRange(cartItems);
-            _appDbContext.SaveChangesAsync();
+           _appDbContext.ShoppingCartItems.RemoveRange(cartItems);
+            await _appDbContext.SaveChangesAsync();
         }
 
         //return the total amout of current cart
