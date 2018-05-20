@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,14 +38,35 @@ namespace MIS.Controllers
             return View(sCvm);
         }
 
-        public RedirectToActionResult AddToShoppingCart(int storeId, int productId, int quantity)
+        public RedirectToActionResult AddToShoppingCart(int amount, int storeId, int productId, int quantity)
+        {
+            var selectedProduct = _context.StoreInventory
+                .Where(s => s.ProductID == productId).FirstOrDefault(s => s.StoreID == storeId);
+
+            if (selectedProduct == null) return RedirectToAction("Index");
+
+            var maxAmount = selectedProduct.StockLevel;
+            var currentAmount = amount + quantity;
+            if (maxAmount >= currentAmount)
+            {
+                _shoppingCart.AddToCart(selectedProduct, quantity);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public RedirectToActionResult NewAddToShoppingCart(int storeId, int productId, int quantity)
         {
             var selectedProduct = _context.StoreInventory
                 .Where(s => s.ProductID == productId).FirstOrDefault(s => s.StoreID == storeId);
 
             if (selectedProduct != null)
             {
-                _shoppingCart.AddToCart(selectedProduct,quantity);
+                _shoppingCart.AddToCart(selectedProduct, quantity);
             }
 
             return RedirectToAction("Index");
