@@ -75,5 +75,19 @@ namespace MIS.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public ViewResult Orders()
+        {
+            var items = _shoppingCart.GetShoppingCartItems();
+            _shoppingCart.ShoppingCartItems = items;
+
+            var sCvm = new ShoppingCartViewModel
+            {
+                ShoppingCart = _shoppingCart,
+                ShoppingCartTotal = _shoppingCart.GetShoppingCartTotal()
+            };
+
+            return View(sCvm);
+        }
     }
 }

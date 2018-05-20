@@ -2,12 +2,11 @@
 @model MIS.Models.ViewModels.ShoppingCartViewModel
 
 @{
-    ViewBag.Title = "Shopping Cart";
+    ViewBag.Title = "Order Reviews";
 }
 
 <div class="row">
-    <h2>Your shopping cart</h2>
-    <h4>Here are the products in your shopping cart.</h4>
+    <h2>Your Orders</h2>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -16,7 +15,6 @@
                 <th class="text-center">Price</th>
                 <th class="text-center">Selected amount</th>
                 <th class="text-center">Subtotal</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -29,11 +27,6 @@
                     <td class="text-center">@line.Amount</td>
                     <td class="text-center">
                         @((line.Amount * line.StoreInventory.Product.Value).ToString("c"))
-                    </td>
-                    <td class="text-center">
-                        <a class="glyphicon glyphicon-plus text-success" asp-controller="ShoppingCart" asp-action="AddToShoppingCart" asp-route-storeId="@line.StoreInventory.StoreID" asp-route-productId="@line.StoreInventory.ProductID"></a>
-                        <a class="glyphicon glyphicon-minus text-warning" asp-controller="ShoppingCart" asp-action="MinusFromShoppingCart" asp-route-storeId="@line.StoreInventory.StoreID" asp-route-productId="@line.StoreInventory.ProductID"></a>
-                        <a class="glyphicon glyphicon-remove text-danger" asp-controller="ShoppingCart" asp-action="RemoveFromShoppingCart" asp-route-storeId="@line.StoreInventory.StoreID" asp-route-productId="@line.StoreInventory.ProductID"></a>
                     </td>
                 </tr>
             }
@@ -50,12 +43,14 @@
 
     <div class="text-right">
         <div class="btn-group ">
-            <a class="btn btn-success" asp-controller="ShoppingCart" asp-action="Orders">Check out</a>
+            <a class="btn btn-success" asp-controller="Payment" asp-action="Index">Confirm Order</a>
         </div>
     </div>
 
 </div>
 
 <a asp-controller="Customer" asp-action="Index">
-    <input type="button" class="btn btn-default" value="Back To Shop Selection" />
+    <input type="button" class="btn btn-default" value="Back To Shop" />
 </a>
+
+<a class="btn btn-default" asp-controller="ShoppingCart" asp-action="Index">Back to Shopping Cart</a>

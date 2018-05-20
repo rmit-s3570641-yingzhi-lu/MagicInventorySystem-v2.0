@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MIS.Data;
 using MIS.Models;
 using MIS.Utilities;
 
@@ -10,6 +11,14 @@ namespace MIS.Controllers
 {
     public class PaymentController : Controller
     {
+
+        private readonly ShoppingCart _shoppingCart;
+
+        public PaymentController(ShoppingCart shoppingCart)
+        {
+            _shoppingCart = shoppingCart;
+        }
+
         public ActionResult Index()
         {
             // The default card type selected is master card.
@@ -31,6 +40,9 @@ namespace MIS.Controllers
             {
                 return View(creditCardForm);
             }
+
+            //clear shopping cart after pay
+            _shoppingCart.ClearCart();
 
             return View("PaymentReceived");
         }
